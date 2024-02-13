@@ -7,6 +7,7 @@ class DireccionsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Retorna el widget ScanTiles amb el tipus 'http' per mostrar escaneigs de direccions
     return ScanTiles(tipo: 'http');
   }
 }

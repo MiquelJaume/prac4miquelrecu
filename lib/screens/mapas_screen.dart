@@ -7,6 +7,7 @@ class MapasScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Retorna el widget ScanTiles amb el tipus 'geo' per mostrar escanejos de mapes
     return ScanTiles(tipo: 'geo');
   }
 }

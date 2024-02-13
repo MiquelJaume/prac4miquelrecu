@@ -19,6 +19,7 @@ class HomeScreen extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.delete_forever),
             onPressed: () {
+              // Esborra tots els escanejos quan es fa clic a l'icona de la paperera
               Provider.of<ScanListProvider>(context, listen: false).esborraTots();
             },
           )
@@ -38,29 +39,27 @@ class _HomeScreenBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final uiProvider = Provider.of<UIProvider>(context);
-  
+
     final currentIndex = uiProvider.selectedMenuOpt;
 
-    final scanListProvidre = Provider.of<ScanListProvider>(context, listen: false);
+    final scanListProvider = Provider.of<ScanListProvider>(context, listen: false);
 
-
-
+    // Inicia la base de dades quan es mostra el cos de la pantalla principal
     DBProvider.db.database;
 
-
-
+    // Comutador per canviar entre les pantalles basat en l'índex actual seleccionat
     switch (currentIndex) {
       case 0:
-        scanListProvidre.carregaScansPerTipo('geo');
-
+        // Carrega els escanejos de tipus 'geo' i mostra la pantalla de mapes
+        scanListProvider.carregaScansPerTipo('geo');
         return MapasScreen();
       case 1:
-        scanListProvidre.carregaScansPerTipo('http');
-
+        // Carrega els escanejos de tipus 'http' i mostra la pantalla de direccions
+        scanListProvider.carregaScansPerTipo('http');
         return DireccionsScreen();
       default:
-        scanListProvidre.carregaScansPerTipo('geo');
-
+        // Per defecte, carrega els escanejos de tipus 'geo' i mostra la pantalla de mapes
+        scanListProvider.carregaScansPerTipo('geo');
         return MapasScreen();
     }
   }

@@ -14,24 +14,27 @@ class DBProvider {
 
   DBProvider._();
 
+  // Obté la instància de la base de dades
   Future<Database> get database async {
     if(_database == null) _database = await initDB();
 
     return _database!;
   }
 
+  // Inicialitza la base de dades
   Future<Database> initDB() async {
- 
+    // Obtenir el directori de documents de l'aplicació
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     final path = join(documentsDirectory.path, 'ScansDB.db');
     print(path);
 
- 
+    // Obrir o crear la base de dades
     return await openDatabase(
       path,
       version: 1,
       onOpen:(db) {},
       onCreate: (Database db, int version) async {
+        // Crear la taula Scans si no existeix
         await db.execute('''
           CREATE TABLE Scans(
             id INTEGER PRIMARY KEY,
@@ -43,7 +46,7 @@ class DBProvider {
     );
   }
 
- 
+  // Insereix un escaneig a la base de dades utilitzant una consulta SQL bruta
   Future<int> insertRawScan(ScanModel nouScan) async {
     final id = nouScan.id;
     final tipo = nouScan.tipo;
@@ -59,6 +62,7 @@ class DBProvider {
     return res;
   }
 
+  // Insereix un escaneig a la base de dades utilitzant la classe ScanModel
   Future<int> insertScan(ScanModel nouScan) async {
     final db = await database;
     final res = await db.insert('Scans', nouScan.toJson());
@@ -68,7 +72,7 @@ class DBProvider {
     return res;
   }
 
- 
+  // Obté tots els escaneigs de la base de dades
   Future<List<ScanModel>> getAllScans() async {
     final db = await database;
     final res = await db.query('Scans');
@@ -76,6 +80,7 @@ class DBProvider {
     return res.isNotEmpty ? res.map((e) => ScanModel.fromJson(e)).toList() : [];
   }
 
+  // Obté un escaneig per identificador de la base de dades
   Future<ScanModel?> getScanById(int id) async {
     final db = await database;
     final res = await db.query('Scans', where: 'id = ?', whereArgs: [id]);
@@ -87,6 +92,7 @@ class DBProvider {
     }
   }
 
+  // Obté escaneigs per tipus de la base de dades
   Future<List<ScanModel>> getScanByTipo(String tipo) async {
     final db = await database;
     final res = await db.query('Scans', where: 'tipo = ?', whereArgs: [tipo]);
@@ -94,6 +100,7 @@ class DBProvider {
     return res.isNotEmpty ? res.map((e) => ScanModel.fromJson(e)).toList() : [];
   }
 
+  // Actualitza un escaneig a la base de dades
   Future<int> updateScan(ScanModel nouScan) async {
     final db = await database;
     final res = await db.update('Scans', nouScan.toJson(), where: 'id = ?', whereArgs: [nouScan.id]);
@@ -101,7 +108,7 @@ class DBProvider {
     return res;
   }
 
-
+  // Esborra tots els escaneigs de la base de dades
   Future<int> deleteAllScan() async {
     final db = await database;
     final res = await db.rawDelete('''
@@ -111,6 +118,7 @@ class DBProvider {
     return res;
   }
 
+  // Esborra un escaneig per identificador de la base de dades
   Future<int> deleteScan(int id) async {
     final db = await database;
     final res = await db.delete('Scans', where: 'id = ?', whereArgs: [id]);
